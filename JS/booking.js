@@ -5,24 +5,45 @@ document.addEventListener("DOMContentLoaded", () => {
     const paymentSection = document.getElementById("paymentSection");
     const bookingIdText = document.getElementById("bookingIdText");
     const amountText = document.getElementById("amountText");
-    
-    let currentBookingId = null;
+
+    // Function to generate short, professional booking ID
+    function generateBookingId() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let id = 'BP-';
+        for (let i = 0; i < 6; i++) {
+            id += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return id;
+    }
+
+    // Generic function to show popups and auto-fade
+    function showPopup(popupId, duration = 4000, callback = null) {
+        const popup = document.getElementById(popupId);
+        popup.classList.add('show');
+
+        setTimeout(() => {
+            popup.classList.remove('show');
+
+            // Run callback after auto-close
+            if (callback) callback();
+        }, duration);
+    }
+
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // Get button elements
         const bookingBtn = document.getElementById('bookingBtn');
         const btnText = bookingBtn.querySelector('.btn-text');
         const btnSpinner = bookingBtn.querySelector('.btn-spinner');
 
-        // Show loading spinner
+        // Disable button & show spinner
         bookingBtn.disabled = true;
         btnText.style.display = 'none';
         btnSpinner.style.display = 'flex';
 
-        // Generate unique Booking ID with timestamp
-        currentBookingId = 'BP-' + Date.now();
+        // Generate short booking ID
+        const currentBookingId = generateBookingId();
 
         // Collect form data
         const data = {
@@ -36,22 +57,19 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         try {
-            // Create timeout promise (10 seconds)
-            const timeoutPromise = new Promise((_, reject) => 
+            const timeoutPromise = new Promise((_, reject) =>
                 setTimeout(() => reject(new Error('Request timeout')), 10000)
             );
 
-            // Send data to server
             const requestPromise = fetch(`${API_URL}/bookings`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
 
-            // Add minimum 1.5 second delay for better UX (so users see the spinner)
-            const delayPromise = new Promise(resolve => setTimeout(resolve, 2000));
+            // Ensure spinner visible for at least 1.5s
+            const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
 
-            // Wait for both the request and minimum delay, with timeout
             const [res] = await Promise.all([
                 Promise.race([requestPromise, timeoutPromise]),
                 delayPromise
@@ -60,24 +78,28 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await res.json();
 
             if (!result.success) {
-                // Check if it's a time slot error
                 if (result.error && result.error.toLowerCase().includes('time slot')) {
-                    document.getElementById('timeSlotErrorPopup').classList.add('show');
+                    showPopup('timeSlotErrorPopup', 5000);
                 } else {
-                    document.getElementById('errorPopup').classList.add('show');
+                    showPopup('errorPopup', 5000);
                 }
-                
-                // Reset button
+
                 bookingBtn.disabled = false;
                 btnText.style.display = 'inline';
                 btnSpinner.style.display = 'none';
                 return;
             }
-            
-            // Show success popup
-            document.getElementById('successPopup').classList.add('show');
 
-            // Prepare payment section data (but don't show yet)
+            // Show success popup
+            showPopup('successPopup', 4000, () => {
+                const paymentSection = document.getElementById('paymentSection');
+                paymentSection.style.display = "block";
+                paymentSection.classList.add('active');
+                paymentSection.scrollIntoView({ behavior: 'smooth' });
+            });
+
+
+            // Prepare payment section data (advance)
             bookingIdText.textContent = currentBookingId;
             amountText.textContent = `Rs. ${result.amount}`;
 
@@ -87,40 +109,31 @@ document.addEventListener("DOMContentLoaded", () => {
             btnSpinner.style.display = 'none';
 
         } catch (err) {
-            // Show error popup without changing the default HTML message
-            document.getElementById('errorPopup').classList.add('show');
             console.error(err);
-            
-            // Reset button
+            showPopup('errorPopup', 5000);
+
             bookingBtn.disabled = false;
             btnText.style.display = 'inline';
             btnSpinner.style.display = 'none';
         }
     });
-
 });
 
-// Close popup function
-window.closeSuccessPopup = function() {
+// Close popup handlers (still keep manual close)
+window.closeSuccessPopup = function () {
     document.getElementById('successPopup').classList.remove('show');
-    
-    // Show QR payment section with animation after closing popup
+
+    // Show payment section smoothly
     const paymentSection = document.getElementById('paymentSection');
     paymentSection.style.display = "block";
     paymentSection.classList.add('active');
-    
-    // Smooth scroll to payment section
     paymentSection.scrollIntoView({ behavior: 'smooth' });
 };
 
-// Close error popup function
-window.closeErrorPopup = function() {
+window.closeErrorPopup = function () {
     document.getElementById('errorPopup').classList.remove('show');
 };
 
-// Close time slot error popup function
-window.closeTimeSlotErrorPopup = function() {
+window.closeTimeSlotErrorPopup = function () {
     document.getElementById('timeSlotErrorPopup').classList.remove('show');
 };
-
-

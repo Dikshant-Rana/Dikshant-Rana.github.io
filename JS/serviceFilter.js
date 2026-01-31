@@ -1,27 +1,43 @@
-// Service Filter and Search System
 export default class ServiceFilter {
     constructor({ onFilter = null } = {}) {
         this.searchInput = document.getElementById('serviceSearch');
+        this.searchBtn = document.querySelector('.search-box i'); // search icon
         this.filterButtons = document.querySelectorAll('.filter-btn');
         this.serviceCards = document.querySelectorAll('.service-card-detailed');
         this.currentCategory = 'all';
-
-        // Callback for pagination
         this.onFilter = onFilter;
 
         this.init();
     }
 
     init() {
-        // --- Search input: updates without scrolling ---
+        // --- Search input: only on Enter ---
         if (this.searchInput) {
-            this.searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value;
-                this.filterServices(searchTerm, this.currentCategory, false); // scroll = false
+            this.searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.applyFilters(true);
+                }
             });
         }
 
-        // --- Filter buttons: updates with scrolling ---
+        // --- Search icon click ---
+        if (this.searchBtn) {
+            this.searchBtn.addEventListener('click', () => {
+                this.applyFilters(true);
+            });
+        }
+        this.clearBtn = document.querySelector('.clear-search');
+
+        if (this.clearBtn) {
+            this.clearBtn.addEventListener('click', () => {
+                this.searchInput.value = '';
+                this.applyFilters(false); // reset filter
+                this.searchInput.focus();
+            });
+        }
+
+
+        // --- Filter buttons ---
         this.filterButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -31,94 +47,51 @@ export default class ServiceFilter {
                 btn.classList.add('active');
 
                 // Update category
-                this.currentCategory = btn.dataset.category;
+                this.currentCategory = btn.dataset.category || 'all';
 
-                const searchTerm = this.searchInput ? this.searchInput.value : '';
-                this.filterServices(searchTerm, this.currentCategory, true); // scroll = true
+                // Apply filter (search term remains)
+                this.applyFilters(true);
             });
         });
     }
+    applyFilters(scroll = false) {
+        const searchTerm = this.searchInput ? this.searchInput.value.trim().toLowerCase() : '';
+        const category = this.currentCategory;
 
-    /**
-     * Filters services by search term and category
-     * @param {string} searchTerm 
-     * @param {string} category 
-     * @param {boolean} scroll - whether to scroll to first visible card
-     */
-    filterServices(searchTerm = '', category = 'all', scroll = false) {
-        const search = searchTerm.toLowerCase().trim();
         let visibleCount = 0;
 
-        if (search) {
-            const matchingCategories = new Set();
-            const matchingCards = [];
-            const nonMatchingCards = [];
+        this.serviceCards.forEach(card => {
+            const serviceName = (card.dataset.service || '').toLowerCase();
+            const serviceCategory = card.dataset.category || '';
 
-            this.serviceCards.forEach(card => {
-                const serviceName = card.dataset.service || '';
-                const serviceCategory = card.dataset.category || '';
-                const searchMatch = serviceName.toLowerCase().includes(search);
+            const matchesSearch = searchTerm === '' || serviceName.includes(searchTerm);
+            const matchesCategory = category === 'all' || serviceCategory === category;
 
-                if (searchMatch) {
-                    matchingCategories.add(serviceCategory);
-                    matchingCards.push(card);
-                } else {
-                    nonMatchingCards.push({ card, category: serviceCategory });
-                }
-            });
-
-            // Hide all cards first
-            this.serviceCards.forEach(card => {
+            if (matchesSearch && matchesCategory) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
                 card.style.display = 'none';
-                card.style.order = '';
-            });
+            }
+        });
 
-            // Show matching cards first
-            matchingCards.forEach(card => {
-                const categoryMatch = category === 'all' || card.dataset.category === category;
-                if (categoryMatch) {
-                    card.style.display = 'block';
-                    card.style.order = '1';
-                    visibleCount++;
-                }
-            });
-
-            // Show related cards from same category (order 2)
-            nonMatchingCards.forEach(({ card, category: cardCategory }) => {
-                const categoryMatch = category === 'all' || cardCategory === category;
-                if (matchingCategories.has(cardCategory) && categoryMatch) {
-                    card.style.display = 'block';
-                    card.style.order = '2';
-                    visibleCount++;
-                }
-            });
-
-        } else {
-            // No search term, filter only by category
-            this.serviceCards.forEach(card => {
-                const serviceCategory = card.dataset.category || '';
-                const categoryMatch = category === 'all' || serviceCategory === category;
-                card.style.order = '';
-                if (categoryMatch) {
-                    card.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        // Show "no results" message if needed
         this.showNoResultsMessage(visibleCount);
 
-        // Notify pagination callback
+        // Pagination callback
         if (this.onFilter) {
-            const visibleCards = Array.from(this.serviceCards).filter(
-                card => card.style.display === 'block'
-            );
+            const visibleCards = Array.from(this.serviceCards).filter(c => c.style.display === 'block');
             this.onFilter(visibleCards, scroll);
         }
+
+        // Scroll to top of grid no matter what
+        if (scroll) {
+            const grid = document.querySelector('.services-grid-detailed');
+            if (grid) {
+                grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
     }
+
 
     showNoResultsMessage(count) {
         const container = document.querySelector('.services-grid-detailed');

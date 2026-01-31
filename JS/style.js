@@ -1,21 +1,24 @@
-// Initialize AOS
-AOS.init({
-    duration: 400,
-    easing: 'ease-out',
-    once: true,
-    offset: 50,
-    delay: 0,
-    disable: 'phone'
-});
+
 
 // Mobile Menu Toggle
 const navToggle = document.getElementById('navToggle');
 const navMenu = document.querySelector('.nav-menu');
 
 if (navToggle && navMenu) {
-    navToggle.addEventListener('click', () => {
+    navToggle.addEventListener('click', (e) => {
+        e.stopPropagation(); // prevent document click from immediately closing menu
         navMenu.classList.toggle('active');
         navToggle.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (navMenu.classList.contains('active') &&
+            !navMenu.contains(e.target) &&
+            !navToggle.contains(e.target)) {
+            navMenu.classList.remove('active');
+            navToggle.classList.remove('active');
+        }
     });
 }
 
@@ -47,16 +50,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Toggle Package Lists
 document.querySelectorAll('.toggle-packages-btn').forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         const serviceCard = this.closest('.service-card-detailed');
         const packageList = serviceCard.querySelector('.package-list');
-        
+
         packageList.classList.toggle('active');
-        
+
         if (packageList.classList.contains('active')) {
-            this.textContent = 'Hide Packages';
+            this.textContent = 'Hide Services';
         } else {
-            this.textContent = 'View Packages';
+            this.textContent = 'View Services';
         }
     });
 });

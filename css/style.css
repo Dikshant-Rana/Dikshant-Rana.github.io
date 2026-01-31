@@ -8,9 +8,9 @@
    3. Global Components (Navigation, Footer)
    4. HOME PAGE (index.html) Styles
    5. ABOUT PAGE (about.html) Styles
-   6. SERVICES PAGE (services.html) Styles
-   7. GALLERY PAGE (gallery.html) Styles
-   8. CONTACT PAGE (contact.html) Styles
+   6. SERVICES PAGE (/service) Styles
+   7. GALLERY PAGE (/gallery) Styles
+   8. CONTACT PAGE (/contact) Styles
    9. Mobile Responsive Styles
    
    ================================================================ */
@@ -106,7 +106,7 @@ h6 {
     max-width: 1400px;
     margin: 0 auto;
     overflow: hidden;
-    padding: 1rem 0;
+    padding: 1rem;
 }
 
 .fee-note {
@@ -114,6 +114,7 @@ h6 {
     border-left: 4px solid #f4b400;
     padding: 12px 15px;
     margin-bottom: 15px;
+    margin-top: 15px;
     font-size: 14px;
     color: #333;
     display: flex;
@@ -421,6 +422,7 @@ h6 {
     font-size: 1rem;
     transition: all 0.3s ease;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .cta-button.primary {
@@ -590,7 +592,7 @@ h6 {
     align-items: center;
     gap: 8px;
     padding: 14px 32px;
-    background: var(--dark-accent);
+    background: var(--primary-color);
     color: var(--light-color);
     text-decoration: none;
     border-radius: 50px;
@@ -598,12 +600,12 @@ h6 {
     font-size: 1rem;
     transition: all 0.3s ease;
     margin-top: 1.5rem;
-
+    box-shadow: 0px 5px 10px rgba(106, 13, 173, 0.35);
 }
 
 .learn-more-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 5px 5px 20px rgba(106, 13, 173, 0.35);
+
 }
 
 .welcome-image img {
@@ -828,9 +830,11 @@ h6 {
 .why-choose-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    gap: 3rem;
     align-items: center;
 }
+
+
 
 .why-choose-text h2 {
     font-family: var(--font-heading);
@@ -847,7 +851,8 @@ h6 {
 
 .feature-list-item {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: flex-start;
 
     gap: 1rem;
 }
@@ -855,7 +860,7 @@ h6 {
 .feature-list-item i {
     font-size: 2rem;
     color: var(--primary-color);
-    margin-top: 0.5rem;
+
 }
 
 .feature-list-item h4 {
@@ -866,7 +871,7 @@ h6 {
 
 .feature-list-item p {
     opacity: 0.8;
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
 .why-choose-image img {
@@ -902,11 +907,12 @@ h6 {
     text-align: left;
     position: relative;
     border-left: 4px solid var(--primary-color);
+    transition: transform 0.3s ease;
 }
 
 .testimonial-preview-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(106, 13, 173, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 10px rgba(106, 13, 173, 0.15);
 }
 
 .testimonial-preview-card::before {
@@ -950,6 +956,50 @@ h6 {
 }
 
 
+/* ----------------------------------------------------------------
+    gallery SECTION - Video Timestamp
+   ---------------------------------------------------------------- */
+.video-item {
+    position: relative;
+}
+
+.video-timestamp {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: white;
+    color: black;
+    font-size: 12px;
+    font-weight: 550;
+    padding: 3px 8px;
+    border-radius: 10px;
+    pointer-events: none;
+    /* so it doesn’t block hover */
+    transition: opacity 0.3s ease;
+    opacity: 1;
+    /* visible by default */
+}
+
+.video-item:hover .video-timestamp {
+    opacity: 0;
+    /* hide on hover */
+}
+
+.fullscreen-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    padding: 3px 6px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+
+
 
 /* ----------------------------------------------------------------
    4.6 CTA SECTION - Home Page Only
@@ -957,8 +1007,10 @@ h6 {
 
 .cta-section {
     color: var(--text-color);
+
     padding: 2rem 0;
     text-align: center;
+
 
 }
 
@@ -968,13 +1020,12 @@ h6 {
     border-top: 8px solid var(--dark-accent);
     border-radius: 50px;
     padding: 1rem 2rem;
+
     background-color: var(--light-color);
     transition: transform 0.3s ease;
+    box-shadow: 0 5px 15px rgba(106, 13, 173, 0.15);
 }
 
-.cta-content:hover {
-    transform: translateY(-10px);
-}
 
 .cta-content h2 {
     font-family: var(--font-heading);
@@ -992,7 +1043,6 @@ h6 {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    margin-bottom: 2rem;
     justify-content: center;
 }
 
@@ -1040,11 +1090,11 @@ h6 {
 .cta-btn {
     display: inline-block;
     padding: 1rem 2rem;
-    border-radius: 25px;
+    border-radius: 50px;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
-    background-color: var(--dark-accent);
+    background-color: var(--primary-color);
     color: var(--light-color);
 }
 
@@ -1061,6 +1111,7 @@ h6 {
     margin-bottom: 2rem;
     justify-content: center;
 }
+
 /* Unified size and style for both CTA buttons */
 /* Ensure both CTAs are always the same width and style */
 .training-cta-primary,
@@ -1076,13 +1127,15 @@ h6 {
     font-size: 1rem;
     transition: all 0.3s ease;
     cursor: pointer;
-    white-space: wrap; 
+    white-space: wrap;
 }
+
 .training-cta-primary {
     background: var(--primary-color);
     color: var(--light-color);
     border: none;
 }
+
 .training-cta-secondary {
     background: white;
     color: var(--primary-color);
@@ -1108,7 +1161,7 @@ h6 {
 .footer {
     background: var(--dark-accent);
     color: var(--light-color);
-    padding: 3rem 0 1rem;
+    padding: 3rem 0 0.5rem;
 }
 
 
@@ -1207,7 +1260,7 @@ h6 {
 
 .social-links {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
     margin-top: 1rem;
 }
 
@@ -1253,10 +1306,16 @@ h6 {
     font-size: 0.8rem;
 }
 
-.disclaimer {
-    font-size: 0.9rem;
-    color: var(--accent-color);
+
+
+.footer-bottom .developer-credit {
     font-style: italic;
+    color: var(--accent-color);
+}
+
+.footer-bottom .developer-credit a {
+
+    color: var(--accent-color);
 }
 
 .footer-section span {
@@ -1306,6 +1365,7 @@ h6 {
     object-fit: cover;
     transition: transform 0.3s ease;
 }
+
 .gallery-category video {
     width: 100%;
     height: 100%;
@@ -1390,15 +1450,113 @@ h6 {
     transition: transform 0.3s ease;
     display: block;
 }
+
 .gallery-item video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    
 }
+
+
 
 .gallery-item:hover img {
     transform: scale(1.05);
+}
+
+/* Gallery Info Card */
+.gallery-note {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 30px;
+    border-radius: 18px;
+    background: var(--background-color);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.gallery-note p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #444;
+    margin-bottom: 22px;
+    font-weight: 400;
+}
+
+/* Social Buttons */
+.gallery-social-links {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.gallery-social-links a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 50px;
+    background: #fff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gallery-social-links a i {
+    font-size: 1.1rem;
+}
+
+/* Hover Effects */
+.gallery-social-links a:hover {
+    background: var(--accent-color);
+    color: #fff;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .gallery-note {
+        padding: 24px;
+        margin-bottom: 35px;
+    }
+
+    .gallery-note p {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .gallery-note {
+        padding: 22px 18px;
+        border-radius: 14px;
+    }
+
+    .gallery-social-links {
+        gap: 12px;
+    }
+
+    .gallery-social-links a {
+        width: 100%;
+        justify-content: center;
+        padding: 14px;
+        font-size: 0.95rem;
+    }
+
+    .gallery-social-links span {
+        font-size: 0.95rem;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .gallery-note p {
+        font-size: 0.95rem;
+    }
 }
 
 /* ----------------------------------------------------------------
@@ -1565,7 +1723,7 @@ h6 {
 /* Training Features Section */
 /* Training Courses Section */
 .training-courses {
-    padding: 5rem 0.5rem;
+    padding: 2rem 0.5rem;
     background: white;
 }
 
@@ -1582,6 +1740,7 @@ h6 {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
     gap: 2.5rem;
     margin-top: 3rem;
+
 }
 
 .course-card {
@@ -1770,7 +1929,7 @@ h6 {
 
 /* Trainer Profile Section */
 .trainer-profile {
-    padding: 5rem 1rem;
+    padding: 2rem 1rem;
     background: var(--background-color);
 }
 
@@ -1858,7 +2017,7 @@ h6 {
 /* Enrollment Process Section */
 /* FAQ Section */
 .training-faq {
-    padding: 5rem 0.5rem;
+    padding: 2rem 0.5rem;
     background: var(--background-color);
 }
 
@@ -1934,6 +2093,7 @@ h6 {
 /* Specialized Courses Section */
 .specialized-courses-section {
     margin-top: 5rem;
+
 }
 
 .specialized-header {
@@ -1989,6 +2149,7 @@ h6 {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
     gap: 2rem;
     margin-top: 2rem;
+    padding-bottom: 2rem;
 }
 
 .course-card.compact {
@@ -2168,7 +2329,7 @@ h6 {
 
 .training-highlight-home {
     padding: 5rem 1.5rem;
-    background: linear-gradient(135deg, var(--light-accent), #fff);
+    background: var(--background-color);
     text-align: center;
 }
 
@@ -2194,7 +2355,7 @@ h6 {
 }
 
 .training-highlight-home h2 {
-    font-size: 2.8rem;
+    font-size: 2.5rem;
     margin-bottom: 1rem;
 }
 
@@ -2650,6 +2811,24 @@ h6 {
     font-size: 1.1rem;
 }
 
+.search-box .clear-search {
+    display: none;
+    /* hide initially */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    color: #999;
+}
+
+.search-box input:not(:placeholder-shown)+.clear-search {
+    display: block;
+    /* show when user types */
+}
+
+
 .search-box input {
     width: 100%;
     padding: 0.9rem 1rem 0.9rem 3rem;
@@ -2739,7 +2918,7 @@ h6 {
     color: var(--dark-accent);
     padding: 1.2rem 1rem;
     border-radius: 12px;
-    margin: 0 auto 3rem;
+    margin: 0 auto 1rem;
     max-width: 700px;
     display: flex;
     align-items: center;
@@ -3462,7 +3641,12 @@ h6 {
         margin-top: 1rem;
     }
 
+    .why-choose-content img {
+        width: 100%;
 
+        height: 400px;
+        object-fit: cover;
+    }
 
 
     .welcome-text h2 {
@@ -3480,12 +3664,7 @@ h6 {
         font-size: 1.8rem;
     }
 
-    .why-choose-content img {
-        width: 100%;
 
-        height: 400px;
-        object-fit: cover;
-    }
 
     .image-vid {
         padding: 2rem 3rem;
@@ -3631,18 +3810,13 @@ h6 {
         padding: 6rem 3rem;
     }
 
-    .why-choose-home {
-        padding: 6rem 3rem;
-    }
+
 
     .testimonial-preview {
         padding: 0 3rem;
         padding-top: 2rem;
     }
 
-    .footer {
-        padding: 4rem 1rem 2rem;
-    }
 
 
 
@@ -3680,6 +3854,23 @@ h6 {
 
 /* Mobile responsive for all pages */
 @media (max-width: 768px) {
+    .stat-box-small h4 {
+        font-size: 2rem;
+        margin-bottom: 0;
+    }
+
+    .stat-box-small p {
+        color: var(--muted-text);
+        font-size: 0.8rem;
+    }
+
+    .training-faq .container .section-title {
+        font-size: 1.8rem;
+    }
+
+    .trainer-profile .section-title {
+        font-size: 2rem;
+    }
 
     .faq-answer p {
         padding: 0 1rem;
@@ -3713,18 +3904,10 @@ h6 {
         margin: 0;
     }
 
-    .pricing-notice {
-        margin: 0;
-        margin-top: 2rem;
-        margin-left: 1rem;
-        margin-right: 1rem;
-    }
 
 
 
-    .why-choose-content .why-choose-image {
-        padding: 15px;
-    }
+
 
     .container {
         width: 90%;
@@ -3769,14 +3952,16 @@ h6 {
 
     /* Hero Section Responsive */
     .hero {
-        padding: 100px 0 60px;
+        padding: 2.5rem 0;
         min-height: auto;
     }
 
+
     .hero-grid {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: 20px;
         width: 90%;
+
     }
 
     .hero-content {
@@ -3876,7 +4061,7 @@ h6 {
         margin: -0.5rem;
     }
 
-    .service-process h2 {
+    .service-process .section-title {
         font-size: 1.8rem;
     }
 
@@ -3884,11 +4069,11 @@ h6 {
         font-size: 0.9rem;
     }
 
-    .quick-services .section-title {
+    .quick-services h2 {
         font-size: 2rem;
     }
 
-    /*contact.html*/
+    /*/contact*/
     .contact-info-grid {
         padding: 1rem 1rem;
 
@@ -4050,11 +4235,17 @@ h6 {
     }
 
     /* Home page mobile styles */
+    .welcome-section {
+        margin: 0;
+        padding-bottom: 0;
+    }
+
     .welcome-content {
         grid-template-columns: 1fr;
         gap: 2rem;
         text-align: center;
-        padding: 0 1rem;
+        padding: 1rem;
+        margin: 0;
     }
 
     .welcome-text {
@@ -4185,7 +4376,8 @@ h6 {
 
     .why-choose-content img {
         width: 100%;
-
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
         height: 400px;
         object-fit: cover;
     }
@@ -4195,9 +4387,13 @@ h6 {
     }
 
     .why-choose-text .feature-list i {
-        font-size: 1rem;
+        font-size: 1.5rem;
     }
 
+    .feature-list-item h4 {
+
+        margin-bottom: 0.2rem;
+    }
 
 
     .feature-list .feature-list-item p {
@@ -4229,9 +4425,9 @@ h6 {
         font-size: 0.9rem;
     }
 
-    .cta-section{
+    .cta-section {
         margin: 0 0.5rem;
-        
+
     }
 
     .cta-section .cta-content h2 {
@@ -4258,9 +4454,6 @@ h6 {
         text-align: center;
     }
 
-    .cta-content h2 {
-        font-size: 2rem;
-    }
 
     /* Global overflow fix */
     body {
@@ -4331,10 +4524,12 @@ h6 {
     }
 
     .why-choose-us .container h2 {
-        font-size: 1.8rem;
+        font-size: 2rem;
         margin-bottom: 1rem;
         margin-top: 0;
+        padding: 0 0.5rem;
     }
+
 
 
     .experience-content .experience-image img {
@@ -4460,10 +4655,11 @@ h6 {
     .specialized-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        padding-bottom: 3rem;
     }
 
     .trainer-info h3 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
     }
 
     .trainer-content {
@@ -4487,10 +4683,12 @@ h6 {
 
     .training-stats {
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1rem;
     }
 
-
+    .training-courses h2 {
+        font-size: 2rem;
+    }
 
     .course-footer {
         flex-direction: column;
@@ -4516,11 +4714,11 @@ h6 {
     }
 
     .faq-question {
-        padding: 0 !important;
+        padding: 1rem;
     }
 
     .faq-container .faq-item {
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem;
     }
 
     .faq-question h4 {
@@ -4558,6 +4756,8 @@ h6 {
         grid-auto-rows: 5px;
         /* smaller base row height → shorter items */
         gap: 10px;
+        padding-top: 0;
+        padding-bottom: 0;
     }
 
 
@@ -4586,9 +4786,82 @@ h6 {
 }
 
 @media (max-width: 600px) {
+    .footer-bottom p{
+        font-size: 0.7rem;
+    }
+    .footer-bottom .developer-credit {
+        font-style: italic;
+        font-size: 0.7rem;
+        color: var(--accent-color);
+    }
+
+    .footer-bottom .developer-credit a {
+
+        color: var(--accent-color);
+    }
+
+    .experience-content .experience-text h2 {
+        font-size: 1.8rem;
+    }
+
+    .training-highlight-home h2 {
+        font-size: 1.6rem;
+    }
+
+    .training-faq .container .section-title {
+        font-size: 1.6rem;
+    }
+
+    .trainer-info h3 {
+        font-size: 1.5rem;
+    }
+
+    .trainer-profile .section-title {
+        font-size: 1.6rem;
+    }
+
+    .course-category-title {
+        font-size: 1.6rem;
+    }
+
+    .training-courses h2 {
+        font-size: 1.6rem;
+    }
+
+    .why-choose-us .container h2 {
+        font-size: 1.6rem;
+    }
+
+    .welcome-content {
+        padding-bottom: 0.5rem;
+
+    }
+
+    .learn-more-btn {
+        margin: 0;
+    }
+    
+
+
+    .cta-section .cta-content h2 {
+        font-size: 1.2rem;
+        margin: 0;
+        padding: 0;
+    }
+
+    .cta-section .cta-content p {
+        font-size: 0.9rem;
+        margin: 0.3rem;
+        padding: 0;
+    }
+
+    .cta-section .cta-content a {
+        font-size: 0.9rem;
+        padding: 0.8rem 1rem;
+    }
 
     .quick-services .section-title {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
     }
 
     .features-slider {
@@ -4614,10 +4887,11 @@ h6 {
     .why-choose-content {
         display: flex;
         flex-direction: column;
+        
     }
 
     .why-choose-text {
-        padding: 0 2rem;
+        padding: 0 1.5rem;
     }
 
 
@@ -4711,8 +4985,8 @@ h6 {
 
 /* Mobile responsive for screens 400px and below */
 @media (max-width: 500px) {
-    .faq-answer p {
-        padding: 0rem !important;
+    .faq-answer p{
+       
         font-size: 0.9rem;
 
     }
@@ -4742,8 +5016,9 @@ h6 {
         font-size: 1rem !important;
         padding: 0.2rem 0.5rem;
     }
-
-
+    .nav-logo{
+        gap: 0rem;
+    }
 
     .nav-logo img {
         height: 55px;
@@ -4814,9 +5089,6 @@ h6 {
     }
 
     /* Hero Section Extra Small Devices */
-    .hero {
-        padding: 80px 0 40px;
-    }
 
     .hero h1 {
         font-size: 2rem;
@@ -4850,8 +5122,7 @@ h6 {
     }
 
     .faq-question {
-        padding: 0 !important;
-        margin: 0 !important;
+        padding: 0.5rem;
     }
 
 
@@ -4883,9 +5154,7 @@ h6 {
         font-size: 1.8rem;
     }
 
-    .training-courses h2 {
-        font-size: 1.6rem;
-    }
+
 
     .feature-card h3 {
         font-size: 1.1rem;
@@ -4911,9 +5180,7 @@ h6 {
         padding: 1.2rem;
     }
 
-    .trainer-info h3 {
-        font-size: 1.5rem;
-    }
+
 
     .training-badge {
         padding: 0.6rem 1rem;
@@ -4935,7 +5202,6 @@ h6 {
 
     .specialized-grid {
         gap: 1rem;
-        padding: 0 0.5rem;
     }
 
     .toggle-courses-btn {
@@ -5013,7 +5279,7 @@ h6 {
     }
 
     .nav-logo {
-        gap: 0.1rem;
+        gap: 0rem;
         min-width: 0;
         flex-shrink: 1;
     }
@@ -5033,9 +5299,7 @@ h6 {
 
 
     /* Hero section */
-    .hero {
-        padding: 80px 10px 20px;
-    }
+
 
     .hero h1 {
         font-size: 1.8rem;
@@ -5113,12 +5377,7 @@ h6 {
     }
 
     /* Buttons and links */
-    .quick-btn,
-    .map-btn,
-    .cta-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
-    }
+
 
     /* Stats and feature items */
     .hero-stats {
@@ -5129,15 +5388,7 @@ h6 {
         font-size: 1.3rem;
     }
 
-    /* Pricing notice */
-    .pricing-notice {
-        margin: 0;
-        margin-top: 2rem;
-        margin-left: .5rem;
-        margin-right: 0.5rem;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
+
 
     .pricing-notice span {
         font-size: 0.9rem;
@@ -5191,6 +5442,6 @@ h6 {
 
 /* ================================================================
    END OF ORCHID BEAUTY PARLOUR STYLESHEET
-   Total Pages: 7 (index.html, about.html, services.html, 
-                  gallery.html, testimonials.html, contact.html, training.html)
+   Total Pages: 7 (index.html, about.html, /service, 
+                  /gallery, testimonials.html, /contact, training.html)
    ================================================================ */
