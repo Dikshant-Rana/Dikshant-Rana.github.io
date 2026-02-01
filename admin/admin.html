@@ -108,6 +108,20 @@
             border-radius: 15px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card.active {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
         }
 
         .stat-card i {
@@ -447,12 +461,12 @@
 
         <!-- Statistics -->
         <div class="stats">
-            <div class="stat-card pending">
+            <div class="stat-card pending active" id="pendingCard" onclick="filterBookings('pending')">
                 <i class="fas fa-clock"></i>
                 <h3 id="pendingCount">0</h3>
                 <p>Pending Bookings</p>
             </div>
-            <div class="stat-card paid">
+            <div class="stat-card paid" id="paidCard" onclick="filterBookings('paid')">
                 <i class="fas fa-check-circle"></i>
                 <h3 id="paidCount">0</h3>
                 <p>Paid Bookings</p>
@@ -462,7 +476,7 @@
         <!-- Bookings Table -->
         <div class="bookings-section">
             <div class="section-header">
-                <h2>Pending Bookings</h2>
+                <h2 id="sectionTitle">Pending Bookings</h2>
                 <button class="refresh-btn" id="refreshBtn">
                     <i class="fas fa-sync-alt"></i> Refresh
                 </button>
@@ -506,23 +520,136 @@
     <script type="module">
         import API_URL from '/JS/config.js';
 
-        function openPasswordModal() {
+        // Global variables for booking management
+        let allBookings = [];
+        let currentFilter = 'pending';
+
+        // Make functions globally available
+        window.openPasswordModal = function() {
             document.getElementById('passwordModal').classList.add('show');
             document.getElementById('changePasswordForm').reset();
             document.getElementById('passwordMessage').classList.remove('show');
         }
 
-        function closePasswordModal() {
+        window.closePasswordModal = function() {
             document.getElementById('passwordModal').classList.remove('show');
+        }
+
+        // Booking filter function
+        window.filterBookings = function(status) {
+            currentFilter = status;
+            
+            // Update active card styling
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.getElementById(status + 'Card').classList.add('active');
+            
+            // Update section title
+            const title = status === 'pending' ? 'Pending Bookings' : 'Paid Bookings';
+            document.getElementById('sectionTitle').textContent = title;
+            
+            // Filter and display bookings
+            displayFilteredBookings();
+        }
+
+        // Display filtered bookings
+        function displayFilteredBookings() {
+            const filteredBookings = allBookings.filter(booking => {
+                return currentFilter === 'pending' ? booking.paymentStatus !== 'paid' : booking.paymentStatus === 'paid';
+            });
+            
+            updateBookingsTable(filteredBookings);
+        }
+
+        // Update bookings table with filtered data
+        function updateBookingsTable(bookings) {
+            const container = document.getElementById('bookingsContainer');
+            
+            if (bookings.length === 0) {
+                const statusText = currentFilter === 'pending' ? 'pending' : 'paid';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <h3>No ${statusText} bookings found</h3>
+                        <p>There are currently no ${statusText} bookings to display.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="bookings-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Service</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${bookings.map(booking => `
+                                <tr>
+                                    <td>${booking.name}</td>
+                                    <td>${booking.phone}</td>
+                                    <td>${booking.service}</td>
+                                    <td>${new Date(booking.preferredDate).toLocaleDateString()}</td>
+                                    <td>${booking.preferredTime}</td>
+                                    <td>
+                                        <span class="status-badge ${booking.paymentStatus === 'paid' ? 'status-paid' : 'status-pending'}">
+                                            ${booking.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        ${booking.paymentStatus !== 'paid' ? 
+                                            `<button class="action-btn" onclick="markAsPaid('${booking._id}')">
+                                                Mark as Paid
+                                            </button>` : 
+                                            '<span style="color: #27ae60; font-weight: 600;">✓ Completed</span>'
+                                        }
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // Store bookings data globally for filtering
+        window.setBookingsData = function(bookings) {
+            allBookings = bookings;
+            displayFilteredBookings();
         }
 
         document.getElementById('changePasswordForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+            const currentPassword = document.getElementById('currentPassword').value.trim();
+            const newPassword = document.getElementById('newPassword').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
             const messageEl = document.getElementById('passwordMessage');
+
+            // Reset previous messages
+            messageEl.classList.remove('show');
+
+            // Validate inputs
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                messageEl.textContent = 'Please fill in all fields';
+                messageEl.className = 'message error show';
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                messageEl.textContent = 'New password must be at least 6 characters';
+                messageEl.className = 'message error show';
+                return;
+            }
 
             // Validate passwords match
             if (newPassword !== confirmPassword) {
@@ -538,6 +665,12 @@
             }
 
             try {
+                // Show loading state
+                const submitBtn = this.querySelector('.save-btn');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Changing...';
+                submitBtn.disabled = true;
+
                 const response = await fetch(`${API_URL}/admin/change-password`, {
                     method: 'POST',
                     headers: {
@@ -550,25 +683,36 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    messageEl.textContent = data.message;
+                    messageEl.textContent = data.message || 'Password changed successfully';
                     messageEl.className = 'message success show';
                     setTimeout(() => {
-                        closePasswordModal();
+                        window.closePasswordModal();
                     }, 2000);
                 } else {
                     messageEl.textContent = data.error || 'Failed to change password';
                     messageEl.className = 'message error show';
                 }
+                
+                // Reset button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+
             } catch (error) {
+                console.error('Password change error:', error);
                 messageEl.textContent = 'Connection error. Please try again.';
                 messageEl.className = 'message error show';
+                
+                // Reset button
+                const submitBtn = this.querySelector('.save-btn');
+                submitBtn.textContent = 'Change Password';
+                submitBtn.disabled = false;
             }
         });
 
         // Close modal on outside click
         document.getElementById('passwordModal').addEventListener('click', function (e) {
             if (e.target === this) {
-                closePasswordModal();
+                window.closePasswordModal();
             }
         });
     </script>
