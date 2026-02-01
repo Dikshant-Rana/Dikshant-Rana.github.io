@@ -555,41 +555,25 @@
 
         // Display filtered bookings
         function displayFilteredBookings() {
-            console.log('🔍 Filtering bookings. Current filter:', currentFilter);
-            console.log('🔍 Total bookings available:', allBookings.length);
-            console.log('🔍 All bookings data:', allBookings);
-            
             if (!Array.isArray(allBookings) || allBookings.length === 0) {
-                console.log('🔍 No bookings available or not an array');
                 updateBookingsTable([]);
                 return;
             }
             
             const filteredBookings = allBookings.filter(booking => {
-                console.log('🔍 Checking booking:', booking.name, 'Payment status:', booking.paymentStatus);
                 const isPaid = booking.paymentStatus === 'paid';
-                const shouldShow = currentFilter === 'pending' ? !isPaid : isPaid;
-                console.log('🔍 Should show?', shouldShow);
-                return shouldShow;
+                return currentFilter === 'pending' ? !isPaid : isPaid;
             });
             
-            console.log('🔍 Filtered results:', filteredBookings.length, 'bookings');
-            console.log('🔍 Filtered bookings data:', filteredBookings);
             updateBookingsTable(filteredBookings);
         }
 
         // Update bookings table with filtered data
         function updateBookingsTable(bookings) {
-            console.log('📊 updateBookingsTable called with:', bookings.length, 'bookings');
-            console.log('📊 Sample booking data:', bookings.length > 0 ? bookings[0] : 'No bookings');
-            
             const container = document.getElementById('bookingsContainer');
-            console.log('📊 Container element found:', !!container);
-            console.log('📊 Container element:', container);
             
             if (!container) {
-                console.error('🚨 bookingsContainer element not found!');
-                console.error('🚨 Available elements:', document.querySelectorAll('[id]'));
+                console.error('Bookings container not found!');
                 return;
             }
             
@@ -598,64 +582,74 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-calendar-times"></i>
-                        <h3>No ${statusText} bookings found</h3>
+                        <h3>No ${statusText} bookings</h3>
                         <p>There are currently no ${statusText} bookings to display.</p>
                     </div>
                 `;
                 return;
             }
-
-            container.innerHTML = `
-                <div class="bookings-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Phone</th>
-                                <th>Service</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${bookings.map(booking => `
-                                <tr>
-                                    <td>${booking.name}</td>
-                                    <td>${booking.phone}</td>
-                                    <td>${booking.service}</td>
-                                    <td>${new Date(booking.preferredDate).toLocaleDateString()}</td>
-                                    <td>${booking.preferredTime}</td>
-                                    <td>
-                                        <span class="status-badge ${booking.paymentStatus === 'paid' ? 'status-paid' : 'status-pending'}">
-                                            ${booking.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        ${booking.paymentStatus !== 'paid' ? 
-                                            `<button class="action-btn" onclick="markAsPaid('${booking._id}')">
-                                                Mark as Paid
-                                            </button>` : 
-                                            '<span style="color: #27ae60; font-weight: 600;">✓ Completed</span>'
-                                        }
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
+            
+            // Generate table HTML
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            ${currentFilter === 'pending' ? '<th>Action</th>' : ''}
+                        </tr>
+                    </thead>
+                    <tbody>
             `;
+            
+            bookings.forEach(booking => {
+                const formatDate = (dateStr) => {
+                    if (!dateStr) return 'N/A';
+                    try {
+                        const date = new Date(dateStr);
+                        return date.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        });
+                    } catch {
+                        return dateStr;
+                    }
+                };
+                
+                const statusBadge = booking.paymentStatus === 'paid' 
+                    ? '<span class="status-badge status-paid">Paid</span>'
+                    : '<span class="status-badge status-pending">Pending</span>';
+                    
+                const actionButton = booking.paymentStatus === 'pending' 
+                    ? `<button class="action-btn" onclick="markAsPaid('${booking._id}')">Mark as Paid</button>`
+                    : '';
+                
+                tableHTML += `
+                    <tr>
+                        <td>${booking.name || 'N/A'}</td>
+                        <td>${booking.phone || 'N/A'}</td>
+                        <td>${booking.service || 'N/A'}</td>
+                        <td>${formatDate(booking.preferredDate)}</td>
+                        <td>${booking.preferredTime || 'N/A'}</td>
+                        <td>Rs. ${booking.amount || 0}</td>
+                        <td>${statusBadge}</td>
+                        ${currentFilter === 'pending' ? `<td>${actionButton}</td>` : ''}
+                    </tr>
+                `;
+            });
+            
+            tableHTML += '</tbody></table>';
+            container.innerHTML = tableHTML;
         }
 
         // Store bookings data globally for filtering
         window.setBookingsData = function(bookings) {
-            console.log('🔄 setBookingsData called with:', bookings);
-            console.log('🔄 Bookings length:', bookings ? bookings.length : 0);
-            console.log('🔄 First booking sample:', bookings && bookings.length > 0 ? bookings[0] : 'No bookings');
-            console.log('🔄 DOM ready state:', document.readyState);
-            console.log('🔄 Bookings container exists:', !!document.getElementById('bookingsContainer'));
-            console.log('🔄 Current window location:', window.location.href);
             allBookings = bookings || [];
             
             // Ensure default state on first load
