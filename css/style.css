@@ -1951,24 +1951,6 @@ h6 {
     box-shadow: var(--shadow);
 }
 
-.trainer-badge {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    padding: 1rem 1.5rem;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    font-weight: 600;
-}
-
-.trainer-badge i {
-    font-size: 1.5rem;
-}
-
 .trainer-info h3 {
     font-size: 2rem;
     color: var(--text-color);
