@@ -518,7 +518,7 @@
     </div>
 
     <script type="module">
-        import API_URL from '/JS/config.js';
+        import API_URL from '../JS/config.js';
 
         // Global variables for booking management
         let allBookings = [];
@@ -555,10 +555,22 @@
 
         // Display filtered bookings
         function displayFilteredBookings() {
+            console.log('Filtering bookings. Current filter:', currentFilter);
+            console.log('Total bookings available:', allBookings.length);
+            
+            if (!Array.isArray(allBookings) || allBookings.length === 0) {
+                console.log('No bookings available');
+                updateBookingsTable([]);
+                return;
+            }
+            
             const filteredBookings = allBookings.filter(booking => {
-                return currentFilter === 'pending' ? booking.paymentStatus !== 'paid' : booking.paymentStatus === 'paid';
+                const isPaid = booking.paymentStatus === 'paid';
+                const shouldShow = currentFilter === 'pending' ? !isPaid : isPaid;
+                return shouldShow;
             });
             
+            console.log('Filtered results:', filteredBookings.length, 'bookings');
             updateBookingsTable(filteredBookings);
         }
 
@@ -623,7 +635,18 @@
 
         // Store bookings data globally for filtering
         window.setBookingsData = function(bookings) {
-            allBookings = bookings;
+            console.log('setBookingsData called with:', bookings);
+            allBookings = bookings || [];
+            
+            // Ensure default state on first load
+            if (currentFilter === 'pending') {
+                document.querySelectorAll('.stat-card').forEach(card => {
+                    card.classList.remove('active');
+                });
+                document.getElementById('pendingCard').classList.add('active');
+                document.getElementById('sectionTitle').textContent = 'Pending Bookings';
+            }
+            
             displayFilteredBookings();
         }
 
@@ -716,7 +739,7 @@
             }
         });
     </script>
-    <script type="module" src="/JS/admin.js"></script>
+    <script type="module" src="../JS/admin.js"></script>
 </body>
 
 </html>
