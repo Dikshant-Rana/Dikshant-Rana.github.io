@@ -555,28 +555,43 @@
 
         // Display filtered bookings
         function displayFilteredBookings() {
-            console.log('Filtering bookings. Current filter:', currentFilter);
-            console.log('Total bookings available:', allBookings.length);
+            console.log('🔍 Filtering bookings. Current filter:', currentFilter);
+            console.log('🔍 Total bookings available:', allBookings.length);
+            console.log('🔍 All bookings data:', allBookings);
             
             if (!Array.isArray(allBookings) || allBookings.length === 0) {
-                console.log('No bookings available');
+                console.log('🔍 No bookings available or not an array');
                 updateBookingsTable([]);
                 return;
             }
             
             const filteredBookings = allBookings.filter(booking => {
+                console.log('🔍 Checking booking:', booking.name, 'Payment status:', booking.paymentStatus);
                 const isPaid = booking.paymentStatus === 'paid';
                 const shouldShow = currentFilter === 'pending' ? !isPaid : isPaid;
+                console.log('🔍 Should show?', shouldShow);
                 return shouldShow;
             });
             
-            console.log('Filtered results:', filteredBookings.length, 'bookings');
+            console.log('🔍 Filtered results:', filteredBookings.length, 'bookings');
+            console.log('🔍 Filtered bookings data:', filteredBookings);
             updateBookingsTable(filteredBookings);
         }
 
         // Update bookings table with filtered data
         function updateBookingsTable(bookings) {
+            console.log('📊 updateBookingsTable called with:', bookings.length, 'bookings');
+            console.log('📊 Sample booking data:', bookings.length > 0 ? bookings[0] : 'No bookings');
+            
             const container = document.getElementById('bookingsContainer');
+            console.log('📊 Container element found:', !!container);
+            console.log('📊 Container element:', container);
+            
+            if (!container) {
+                console.error('🚨 bookingsContainer element not found!');
+                console.error('🚨 Available elements:', document.querySelectorAll('[id]'));
+                return;
+            }
             
             if (bookings.length === 0) {
                 const statusText = currentFilter === 'pending' ? 'pending' : 'paid';
@@ -635,7 +650,12 @@
 
         // Store bookings data globally for filtering
         window.setBookingsData = function(bookings) {
-            console.log('setBookingsData called with:', bookings);
+            console.log('🔄 setBookingsData called with:', bookings);
+            console.log('🔄 Bookings length:', bookings ? bookings.length : 0);
+            console.log('🔄 First booking sample:', bookings && bookings.length > 0 ? bookings[0] : 'No bookings');
+            console.log('🔄 DOM ready state:', document.readyState);
+            console.log('🔄 Bookings container exists:', !!document.getElementById('bookingsContainer'));
+            console.log('🔄 Current window location:', window.location.href);
             allBookings = bookings || [];
             
             // Ensure default state on first load
